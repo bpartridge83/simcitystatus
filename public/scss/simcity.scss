@@ -1,0 +1,46 @@
+body, html {
+	margin: 0;
+ 	padding: 0;
+}
+	
+body {
+	padding-top: 20px;
+	padding-bottom: 40px;
+	font-family: 'Tauri', sans-serif !important;
+}
+
+.container-narrow {
+	margin: 0 auto;
+	max-width: 700px;
+}
+
+.masthead {
+	background-color: #fc573b;
+	color: #fff !important;
+	font-weight: bold;
+	font-size: 40px;
+	text-align: center;
+	text-shadow: 4px 0px 0px #ffab40;
+	padding: 40px 20px;
+	margin-bottom: 30px;
+	
+	@media (max-width: 767px) {
+		margin-left: -20px;
+		margin-right: -20px;
+	}
+	
+}
+
+/* Supporting marketing content */
+.marketing {
+	margin: 20px 0;
+}
+.marketing h4 {
+	margin-top: 28px;
+}
+hr {
+	margin-bottom: -20px;
+}
+h3 {
+	margin-top: 50px;
+}

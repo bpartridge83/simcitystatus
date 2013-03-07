@@ -7,11 +7,12 @@ var express = require('express'),
 var cons = require('consolidate'),
 	swig = require('swig'),
 	Deferred = require('deferred'),
-	Async = require('async');
+	Async = require('async'),
+	microtime = require('microtime');
 	
 swig.init({
-    root: __dirname + '/../views',
-    allowErrors: true // allows errors to be thrown and caught by express instead of suppressed by Swig,
+    root: __dirname + '/views',
+    allowErrors: true
 });
 
 app.configure(function () {
@@ -30,7 +31,7 @@ app.get('/', function (req, res) {
 	
 	http.request({
 		host: 'worlds.simcity.com',
-		path: '/parallelworlds.json'
+		path: '/parallelworlds.json?t=' + microtime.now()
 	}, function (response) {
 		
 		var str = '';
@@ -41,10 +42,70 @@ app.get('/', function (req, res) {
 		
 		response.on('end', function () {
 			
+			var hosts = JSON.parse(str).hosts;
+			
+			for (var i = 0; i < hosts.length; i++) {
+				for (var j = 0; j < hosts[i].statuses.length; j++) {
+					
+					if (!hosts[i].status && hosts[i].statuses[j].status == 'busy') {
+						hosts[i].status = 'icon-refresh';
+					}
+					
+					if (hosts[i].statuses[j].status == 'full') {
+						hosts[i].status = 'icon-warning-sign';
+					}
+					
+					if (hosts[i].statuses[j].status == 'hidden') {
+						hosts[i].status = 'icon-eye-close';
+					}
+					
+				}
+			}
+			
+			var na_servers = [],
+				eu_servers = [],
+				oceania_servers = [];
+			
+			for (var i = 0; i < hosts.length; i++) {
+				
+				if (hosts[i].Desc.indexOf('North America') > -1) {
+					na_servers.push(hosts[i]);
+				}
+				
+				if (hosts[i].Desc.indexOf('Europe') > -1) {
+					eu_servers.push(hosts[i]);
+				}
+				
+				if (hosts[i].Desc.indexOf('Oceanic') > -1) {
+					oceania_servers.push(hosts[i]);
+				}
+				
+			}
+			
+			var servers = {
+				north_america: {
+					name: 'North America',
+					servers: na_servers,
+					half: Math.ceil(na_servers.length / 2)
+				},
+				europe: {
+					name: 'Europe',
+					servers: eu_servers,
+					half: Math.ceil(eu_servers.length / 2)
+				},
+				oceania: {
+					name: 'Oceanic',
+					servers: oceania_servers,
+					half: Math.ceil(oceania_servers.length / 2)
+				}
+			}
+			
+			console.log(servers.oceania);
+			
 			res.render('index', {
-				servers: JSON.parse(str).hosts,
-				half: (JSON.parse(str).hosts.length / 2)
+				servers: servers
 			});
+			
 		});
 		
 	}).end();

@@ -11,7 +11,8 @@
 	"optimist": "0.3.x",
     "request": "2.x.x",
 	"async": "0.2.x",
-	"deferred": "0.6.x"
+	"deferred": "0.6.x",
+	"microtime": "0.3.x"
   },
   "engines": {
     "node": "0.8.x",
