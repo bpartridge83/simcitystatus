@@ -1,0 +1,19 @@
+{
+  "name": "simcitystatus",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "3.x",
+    "consolidate": "0.7.x",
+    "swig": "0.13.x",
+    "underscore": "1.4.x",
+    "forever": "0.10.x",
+    "portscanner": "0.1.x",
+    "request": "2.x.x",
+	"async": "0.2.x",
+	"deferred": "0.6.x"
+  },
+  "engines": {
+    "node": "0.8.x",
+    "npm": "1.1.x"
+  }
+}
