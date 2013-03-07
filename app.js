@@ -1,6 +1,7 @@
 var express = require('express'),
 	app = express(),
 	http = require('http'),
+	argv = require('optimist').argv,
 	server = http.createServer(app);
 
 var port_range = [5000, 5009];
