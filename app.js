@@ -6,6 +6,27 @@ var express = require('express'),
 
 var port_range = [5000, 5009];
 	
+app.get('/source', function (req, res) {
+	
+	http.request({
+		host: 'worlds.simcity.com',
+		path: '/parallelworlds.json'
+	}, function (response) {
+		
+		var str = '';
+		
+		response.on('data', function (chunk) {
+			str += chunk;
+		});
+		
+		response.on('end', function () {
+			res.send(str);
+		});
+		
+	}).end();
+	
+})
+
 app.get('/status', function (req, res) {
 	
 	var pjson = require('./package.json');
