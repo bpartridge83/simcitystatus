@@ -8,6 +8,7 @@
     "underscore": "1.4.x",
     "forever": "0.10.x",
     "portscanner": "0.1.x",
+	"optimist": "0.3.x",
     "request": "2.x.x",
 	"async": "0.2.x",
 	"deferred": "0.6.x"
