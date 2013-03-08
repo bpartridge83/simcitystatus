@@ -56,7 +56,8 @@
 			{% for server in region.servers %}
 				{% if loop.index0 == region.half %}</div><div class="span6">{% endif %}
 				<h4><i class="{{ server.icon }}"></i> {{ server.Desc }}</h4>
-				<div class="sparkline" data-chart="{{ server.chart }}"></div>
+				<h5>Current Status: <b>{{ server.status|capitalize }}</b></h5>
+				<div class="sparkline" style="margin-bottom: 12px" data-chart="{{ server.chart }}"></div>
 			{% endfor %}	
 			</div>
 		</div>
