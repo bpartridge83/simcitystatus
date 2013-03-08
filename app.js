@@ -4,7 +4,8 @@ var express = require('express'),
 	argv = require('optimist').argv,
 	server = http.createServer(app);
 
-var cons = require('consolidate'),
+var _ = require('underscore'),
+	cons = require('consolidate'),
 	swig = require('swig'),
 	Deferred = require('deferred'),
 	Async = require('async'),
@@ -155,9 +156,11 @@ app.get('/', function (req, res) {
 				
 			}
 			
-			db.collection('status').find({}, { limit: 1000, sort: [[ 'datetime', 1 ]] }).toArray(function (err, data) {
+			db.collection('status').find({}, { limit: 720, sort: [[ 'datetime', -1 ]] }).toArray(function (err, data) {
 			
 				var chart_data = [];
+				
+				data = data.reverse();
 				
 				for (var i = 0; i < data.length; i++) {
 					
