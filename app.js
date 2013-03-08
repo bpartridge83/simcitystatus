@@ -32,11 +32,77 @@ app.configure(function () {
 	
 app.get('/update', function (req, res) {
 
-	db.collection('servers').find().toArray(function (err, data) {
+	console.log('in update');
 	
-		res.send(data);
+	http.request({
+		host: 'worlds.simcity.com',
+		path: '/parallelworlds.json?t=' + microtime.now()
+	}, function (response) {
 		
-	});
+		var str = '';
+		
+		response.on('data', function (chunk) {
+			str += chunk;
+			console.log('getting data');
+		});
+		
+		response.on('end', function () {
+			
+			console.log(str);
+			
+			var hosts = JSON.parse(str).hosts,
+				new_statuses = [];
+	
+			for (var i = 0; i < hosts.length; i++) {
+				
+				for (var j = 0; j < hosts[i].statuses.length; j++) {
+					
+					if (!hosts[i].status && hosts[i].statuses[j].status == 'busy') {
+						hosts[i].status = 'busy';
+						hosts[i].state = -1;
+						hosts[i].icon = 'icon-refresh';
+					}
+					
+					if (hosts[i].statuses[j].status == 'full') {
+						hosts[i].status = 'full';
+						hosts[i].state = -1;
+						hosts[i].icon = 'icon-warning-sign';
+					}
+					
+					if (hosts[i].statuses[j].status == 'hidden') {
+						hosts[i].status = 'hidden';
+						hosts[i].state = 0;
+						hosts[i].icon = 'icon-eye-close';
+					}
+					
+					if (hosts[i].statuses[j].status == 'available') {
+						hosts[i].status = 'available';
+						hosts[i].state = 1;
+						hosts[i].icon = 'icon-ok-sign';
+					}
+					
+				}
+				
+				new_statuses.push({
+					server: hosts[i].name,
+					status: hosts[i].status,
+					state: hosts[i].state,
+					datetime: microtime.nowStruct()[0]
+				})
+		
+			};
+			
+			console.log(new_statuses);
+			
+			db.collection('status').insert(new_statuses, function (err, data) {
+				res.send({
+					status: true
+				});
+			});
+			
+		})
+	
+	}).end();
 	
 });
 	
@@ -58,6 +124,7 @@ app.get('/', function (req, res) {
 			var hosts = JSON.parse(str).hosts;
 			
 			for (var i = 0; i < hosts.length; i++) {
+				
 				for (var j = 0; j < hosts[i].statuses.length; j++) {
 					
 					if (!hosts[i].status && hosts[i].statuses[j].status == 'busy') {
@@ -85,54 +152,67 @@ app.get('/', function (req, res) {
 					}
 					
 				}
-			}
-			
-			
-			
-			
-			
-			var na_servers = [],
-				eu_servers = [],
-				oceania_servers = [];
-			
-			for (var i = 0; i < hosts.length; i++) {
-				
-				if (hosts[i].Desc.indexOf('North America') > -1) {
-					na_servers.push(hosts[i]);
-				}
-				
-				if (hosts[i].Desc.indexOf('Europe') > -1) {
-					eu_servers.push(hosts[i]);
-				}
-				
-				if (hosts[i].Desc.indexOf('Oceanic') > -1) {
-					oceania_servers.push(hosts[i]);
-				}
 				
 			}
 			
-			var servers = {
-				north_america: {
-					name: 'North America',
-					servers: na_servers,
-					half: Math.ceil(na_servers.length / 2)
-				},
-				europe: {
-					name: 'Europe',
-					servers: eu_servers,
-					half: Math.ceil(eu_servers.length / 2)
-				},
-				oceania: {
-					name: 'Oceanic',
-					servers: oceania_servers,
-					half: Math.ceil(oceania_servers.length / 2)
+			db.collection('status').find({}, { limit: 1000, sort: [[ 'datetime', 1 ]] }).toArray(function (err, data) {
+			
+				var chart_data = [];
+				
+				for (var i = 0; i < data.length; i++) {
+					
+					if (!chart_data[data[i].server]) {
+						chart_data[data[i].server] = ''+data[i].state;
+					} else {
+						chart_data[data[i].server] += ','+data[i].state;
+					}
+					
 				}
-			}
 			
-			console.log(servers.oceania);
+				var na_servers = [],
+					eu_servers = [],
+					oceania_servers = [];
 			
-			res.render('index', {
-				servers: servers
+				for (var i = 0; i < hosts.length; i++) {
+				
+					hosts[i].chart = chart_data[hosts[i].name];
+				
+					if (hosts[i].Desc.indexOf('North America') > -1) {
+						na_servers.push(hosts[i]);
+					}
+				
+					if (hosts[i].Desc.indexOf('Europe') > -1) {
+						eu_servers.push(hosts[i]);
+					}
+				
+					if (hosts[i].Desc.indexOf('Oceanic') > -1) {
+						oceania_servers.push(hosts[i]);
+					}
+				
+				}
+			
+				var servers = {
+					north_america: {
+						name: 'North America',
+						servers: na_servers,
+						half: Math.ceil(na_servers.length / 2)
+					},
+					europe: {
+						name: 'Europe',
+						servers: eu_servers,
+						half: Math.ceil(eu_servers.length / 2)
+					},
+					oceania: {
+						name: 'Oceanic',
+						servers: oceania_servers,
+						half: Math.ceil(oceania_servers.length / 2)
+					}
+				}
+			
+				res.render('index', {
+					servers: servers
+				});
+				
 			});
 			
 		});

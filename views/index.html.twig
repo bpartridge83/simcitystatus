@@ -37,7 +37,7 @@
 			{% for server in region.servers %}
 				{% if loop.index0 == region.half %}</div><div class="span6">{% endif %}
 				<h4><i class="{{ server.icon }}"></i> {{ server.Desc }}</h4>
-				<div class="sparkline"></div>
+				<div class="sparkline" data-chart="{{ server.chart }}"></div>
 			{% endfor %}	
 			</div>
 		</div>
@@ -50,12 +50,20 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="/js/sparkline.min.js"></script>
 	<script type="text/javascript">
-	/*
-	$(".sparkline").sparkline([1,1,0,1,-1,-1,1,-1,0,0,1,1], {
-	    type: 'tristate',
-	    barWidth: 2,
-	    barSpacing: 0});*/
-		</script>
+	$(".sparkline").each(function () {
+	
+		var data = $(this).data('chart').split(',');
+		
+		console.log(data);
+	
+		$(this).sparkline(data, {
+			disableTooltips: true,
+	    	type: 'tristate',
+	    	barWidth: 3,
+	    	barSpacing: 1});
+		
+	});
+	</script>
 
 	<script type="text/javascript">
 
