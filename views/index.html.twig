@@ -18,6 +18,15 @@
   </head>
 
   <body>
+	  
+	  <div id="fb-root"></div>
+	  <script>(function(d, s, id) {
+	    var js, fjs = d.getElementsByTagName(s)[0];
+	    if (d.getElementById(id)) return;
+	    js = d.createElement(s); js.id = id;
+	    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=199012820162911";
+	    fjs.parentNode.insertBefore(js, fjs);
+	  }(document, 'script', 'facebook-jssdk'));</script>
 
 	  <div class="masthead">
 		  <div class="container-narrow">
@@ -43,6 +52,12 @@
 		</div>
 		
 		{% endfor %}
+		
+		<div class="row-fluid" style="margin: 60px 0px;"><div class="span12">
+			<div class="fb-like" data-href="http://simcitystat.us" data-send="true" data-width="450" data-show-faces="true" data-font="lucida grande"></div>
+			<a href="https://twitter.com/share" class="twitter-share-button" data-text="Is your SimCity server up? Find out what's available at http://simcitystat.us" data-related="simcity">Tweet</a>
+			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+		</div></div>		
 
     </div> <!-- /container -->
 
