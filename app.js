@@ -10,6 +10,9 @@ var cons = require('consolidate'),
 	Async = require('async'),
 	microtime = require('microtime');
 	
+var mongo = require('mongoskin'),
+	db = mongo.db('mongodb://simcityserver:splines@ds043037.mongolab.com:43037/simcitystatus');
+	
 swig.init({
     root: __dirname + '/views',
     allowErrors: true
@@ -25,6 +28,16 @@ app.configure(function () {
 	app.set('views', __dirname + '/views');
     app.set("view options", { layout: false });
 
+});
+	
+app.get('/update', function (req, res) {
+
+	db.collection('servers').find().toArray(function (err, data) {
+	
+		res.send(data);
+		
+	});
+	
 });
 	
 app.get('/', function (req, res) {
@@ -48,19 +61,35 @@ app.get('/', function (req, res) {
 				for (var j = 0; j < hosts[i].statuses.length; j++) {
 					
 					if (!hosts[i].status && hosts[i].statuses[j].status == 'busy') {
-						hosts[i].status = 'icon-refresh';
+						hosts[i].status = 'busy';
+						hosts[i].state = 0;
+						hosts[i].icon = 'icon-refresh';
 					}
 					
 					if (hosts[i].statuses[j].status == 'full') {
-						hosts[i].status = 'icon-warning-sign';
+						hosts[i].status = 'full';
+						hosts[i].state = -1;
+						hosts[i].icon = 'icon-warning-sign';
 					}
 					
 					if (hosts[i].statuses[j].status == 'hidden') {
-						hosts[i].status = 'icon-eye-close';
+						hosts[i].status = 'hidden';
+						hosts[i].state = 0;
+						hosts[i].icon = 'icon-eye-close';
+					}
+					
+					if (hosts[i].statuses[j].status == 'available') {
+						hosts[i].status = 'available';
+						hosts[i].state = 1;
+						hosts[i].icon = 'icon-ok-sign';
 					}
 					
 				}
 			}
+			
+			
+			
+			
 			
 			var na_servers = [],
 				eu_servers = [],

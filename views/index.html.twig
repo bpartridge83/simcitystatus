@@ -36,7 +36,7 @@
 			<div class="span6">
 			{% for server in region.servers %}
 				{% if loop.index0 == region.half %}</div><div class="span6">{% endif %}
-				<h4><i class="{{ server.status }}"></i> {{ server.Desc }}</h4>
+				<h4><i class="{{ server.icon }}"></i> {{ server.Desc }}</h4>
 				<div class="sparkline"></div>
 			{% endfor %}	
 			</div>
